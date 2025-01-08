@@ -1,0 +1,101 @@
+import json
+import pickle
+import numpy as np
+import nltk
+import random
+from tensorflow.keras.models import load_model
+
+# Inicializar el lematizador
+lemmatizer = nltk.WordNetLemmatizer()
+
+# Cargar los archivos necesarios
+with open('intents.json', encoding='utf-8') as file:
+    intents = json.load(file)
+words = pickle.load(open('words.pkl', 'rb'))
+classes = pickle.load(open('classes.pkl', 'rb'))
+
+# Cargar el modelo
+model = load_model('chatbot_model.keras')
+
+# Convertir palabras a su forma raíz
+def clean_up_sentence(sentence):
+    sentence_words = nltk.word_tokenize(sentence)
+    sentence_words = [lemmatizer.lemmatize(word) for word in sentence_words]
+    return sentence_words
+
+# Convertir la oración en una bolsa de palabras
+def bag_of_words(sentence):
+    sentence_words = clean_up_sentence(sentence)
+    bag = [0] * len(words)
+    for w in sentence_words:
+        for i, word in enumerate(words):
+            if word == w:
+                bag[i] = 1
+    return np.array(bag)
+
+# Predecir la clase de la oración
+def predict_class(sentence):
+    bow = bag_of_words(sentence)
+    bow = np.array([bow])
+    res = model.predict(bow)[0]
+    max_index = np.where(res == np.max(res))[0][0]
+    category = classes[max_index]
+    print(f"Bolsa de palabras: {bow}, Clase predicha: {category}")  # Añadir esta línea
+    return category
+
+# Obtener una respuesta para la categoría predicha
+def get_response(tag, intents_json):
+    for intent in intents_json['intents']:
+        if intent["tag"] == tag:
+            return random.choice(intent['responses'])
+    return "Lo siento, no entiendo la solicitud."
+
+
+# Añadir una nueva intención y respuesta
+def add_new_intent(user_input, new_response):
+    tag = "unknown"
+    with open('intents.json', 'r', encoding='utf-8') as file:
+        data = json.load(file)
+
+    existing_intent = next((item for item in data['intents'] if item["tag"] == tag), None)
+    if existing_intent:
+        existing_intent['patterns'].append(user_input)
+        existing_intent['responses'].append(new_response)
+    else:
+        data['intents'].append({
+            "tag": tag,
+            "patterns": [user_input],
+            "responses": [new_response]
+        })
+
+    with open('intents.json', 'w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4)
+
+    print("Nueva intención y respuesta añadidas.")
+
+# Interacción con el usuario
+def chat():
+    print("¡Hola! Soy tu asistente virtual. Escribe 'salir' para terminar la conversación.")
+    while True:
+        user_input = input("Tú: ")
+        if user_input.lower() == 'salir':
+            print("¡Hasta luego!")
+            break
+
+        predicted_class = predict_class(user_input)
+        print(f"Clase predicha: {predicted_class}")
+        response = get_response(predicted_class, intents)
+
+        if response == "Lo siento, no entiendo la solicitud.":
+            response = f"No tengo una respuesta para '{user_input}'. ¿Cómo debería responder a esto?"
+            print(f"Lola: {response}")
+            new_response = input("¿Cuál debería ser la respuesta a esta pregunta? ")
+            if new_response:
+                add_new_intent(user_input, new_response)
+                print("Gracias por tu sugerencia. He añadido una nueva respuesta.")
+        else:
+            print(f"Lola: {response}")
+
+# Ejecutar el chat
+if __name__ == "__main__":
+    chat()
