@@ -1,0 +1,38 @@
+ "intents": [
+    {
+      "tag": "saludo",
+      "patterns": ["hola", "buenos días", "buenas tardes", "buenas noches"],
+      "responses": ["¡Hola! ¿Cómo puedo ayudarte hoy?", "¡Hola! ¿Qué tal?"]
+    },
+    {
+      "tag": "necesita_ayuda",
+      "patterns": ["necesito ayuda", "puedes ayudarme", "necesito asistencia"],
+      "responses": ["Claro, ¿en qué necesitas ayuda?", "Estoy aquí para ayudarte. ¿Qué necesitas?"]
+    },
+    {
+      "tag": "despedida",
+      "patterns": ["adiós", "hasta luego", "nos vemos"],
+      "responses": ["¡Hasta luego! Que tengas un buen día.", "¡Adiós! Si necesitas algo más, no dudes en volver."]
+    },
+    {
+      "tag": "Informacion general",
+      "patterns": ["quien eres"],
+      "responses": ["soy quien te va aconsejar"]
+    },
+    {
+      "tag": "edad",
+      "patterns": ["cuantos años tienes"],
+      "responses": ["40 años"]
+    },
+    {
+      "tag": "Nombre",
+      "patterns": ["como te llamas"],
+      "responses": ["Lavinia"]
+    },
+    {
+      "tag": "lugar",
+      "patterns": ["de donde eres"],
+      "responses": ["Malaga"]
+    }
+  ]
+
