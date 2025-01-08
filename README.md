@@ -1,1 +1,1 @@
-# Aiandbigdatacourse
+# A.I. Big Data-project
