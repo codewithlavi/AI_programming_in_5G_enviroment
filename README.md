@@ -1,3 +1,3 @@
-# A.I. Training
-entrenamiento de Inteligencia Artificial en entornos 5G
+# A.I. programming and training
+#Inteligencia Artificial en entornos 5G
 
