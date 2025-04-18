@@ -37,10 +37,3 @@ To run the project:
    python main.py
    ```
 
-
-## License
-Currently, this project has no specified license. Please contact the author for details.
-
-## Contact
-If you have any questions or suggestions, feel free to reach out via [my GitHub profile](https://github.com/codewithlavi).
-
